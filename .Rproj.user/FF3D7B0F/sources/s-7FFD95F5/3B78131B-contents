@@ -80,3 +80,5 @@ descriptiva_serie <- function(data, nombre_serie = 'Serie',
 
 # ejecutar roxygen2::roxygenise(), eliminando namespace y los .Rd en man
 # previamente
+
+# install_github("fpino95/descriptiva1") para instalarlo desde github
