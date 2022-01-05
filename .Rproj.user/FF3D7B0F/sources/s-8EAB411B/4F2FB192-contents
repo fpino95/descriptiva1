@@ -1,0 +1,157 @@
+library(dplyr)
+library(plotly)
+library(sarima)
+
+datos <- as.data.frame(AirPassengers)
+datos$Pasajeros <- datos$x
+datos$Mes <- seq(1, nrow(datos), by = 1)
+datos <- datos %>% select(Mes, Pasajeros)
+titulo_grafico <- 'AirPassengerx'
+nombre_serie <- 'AirPassengers'
+
+data1 <- as.vector(datos$Pasajeros)
+
+# aca comenzaria la funcion
+
+datos <- data.frame(secuencia = seq(1, length(data1), by = 1),
+                    data1)
+
+li_reg <- lm(datos[,2] ~ datos[,1])
+
+
+fig <- plot_ly(x = datos[,1], y = datos[,2], name = 'Serie', 
+               type = 'scatter', mode = 'lines') %>% 
+  add_trace(y = li_reg$fitted.values, name = 'Tendencia', 
+                         mode = 'lines') %>% 
+  layout(title = titulo_grafico,
+         xaxis = list(title = 'Secuencia'),
+         yaxis = list(title = nombre_serie)) %>% 
+  layout(hovermode = 'compare')
+
+fig
+
+print(paste0('Medidas de tendencia central para ', colnames(datos)[2], ' son:'))
+print(summary(datos[,2]))
+
+print('Prueba de normalidad, valor-p prueba de Shapiro Wilk:')
+
+normalidad <- shapiro.test(datos[,2])
+print(normalidad$p.value)
+
+if(normalidad$p.value >= 0.05){print('Se supone normalidad')}
+if(normalidad$p.value < 0.05){print('Se evidencia no normalidad')}
+
+# grafico de densidad
+plot(density(datos[, 2], adjust = 1), 
+     main = paste0('Densidad ', Titulo_grafico))
+
+# prueba aletoriedad - RUIDO BLANCO
+
+#datos[, 2] <- arima.sim(model = list(order = c(0, 0, 0)), n = nrow(datos)) # simular ruido blanco
+
+x <- datos[, 2]
+
+x.acf <- autocorrelations(x)
+
+# x.iid <- whiteNoiseTest(x.acf, h0 = "iid", nlags = c(5,10,20), x = x,
+#                         method = "LiMcLeod")
+# 
+# x.iid$test
+
+
+x.iid <- whiteNoiseTest(x.acf, h0 = "iid", nlags = seq(1, nrow(datos), by = 1), x = x,
+                        method = "LiMcLeod")
+
+test_white <- data.frame(x.iid$test)
+test_white <- na.omit(test_white)
+
+if(sum(test_white$pvalue > 0.05) == nrow(test_white)){
+  print('Definitivamente es ruido blanco')
+}
+
+if((sum(test_white$pvalue > 0.05) < nrow(test_white)) &
+   (sum(test_white$pvalue > 0.05) >= nrow(test_white) / 2)){
+  print('Puede ser ruido blanco')
+}
+
+if((sum(test_white$pvalue > 0.05) < nrow(test_white) / 2) &
+   (sum(test_white$pvalue > 0.05) > 0)){
+  print('Puede no ser ruido blanco')
+}
+
+if(sum(test_white$pvalue > 0.05) == 0){
+  print('Definitivamente NO es ruido blanco')
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# A partir de aca es la descriptiva para datos continuos diferente a serie (x vs y)
+
+datos <- iris[, c(1,3)]
+titulo_grafico <- 'Datos Iris'
+
+# aca comienza la funcion
+
+#regresion para la tendencia
+li_reg <- lm(datos[,2] ~ datos[,1]) # "y" es datos[,2]
+
+# grafico x vs y (ingresado como data frame)
+fig <- plot_ly(x = datos[,1], y = datos[,2], name = 'Datos', 
+               type = 'scatter', mode = 'markers') %>% 
+  add_trace(y = li_reg$fitted.values, name = 'Regresion Lineal', 
+            mode = 'lines') %>% 
+  layout(title = titulo_grafico,
+         xaxis = list(title = colnames(datos)[1]),
+         yaxis = list(title = colnames(datos)[2])) %>% 
+  layout(hovermode = 'compare')
+
+fig
+
+# significancia regresion lineal
+print('Resultado Regresion lineal:')
+print(summary(li_reg))
+print(paste0('datos[, 1] corresponde a ', colnames(datos)[1],
+             ', en este caso la variable independiente (x)'))
+
+# medidas de tendencia central
+print(paste0('Medidas de tendencia central para ', colnames(datos)[1], ' son:'))
+print(summary(datos[,1]))
+
+print(paste0('Medidas de tendencia central para ', colnames(datos)[2], ' son:'))
+print(summary(datos[,2]))
+
+# prueba de normalidad para ambas vbles
+print(paste0('Prueba de normalidad ', colnames(datos)[1], ', valor-p prueba de Shapiro Wilk:'))
+normalidad <- shapiro.test(datos[,1])
+print(normalidad$p.value)
+if(normalidad$p.value >= 0.05){print('Se supone normalidad')}
+if(normalidad$p.value < 0.05){print('Se evidencia no normalidad')}
+
+print(paste0('Prueba de normalidad ', colnames(datos)[2], ', valor-p prueba de Shapiro Wilk:'))
+normalidad <- shapiro.test(datos[,2])
+print(normalidad$p.value)
+if(normalidad$p.value >= 0.05){print('Se supone normalidad')}
+if(normalidad$p.value < 0.05){print('Se evidencia no normalidad')}
+
+# Graficos de distribucion
+x11()
+par(mfrow=c(2,1))
+plot(density(datos[, 1], adjust = 1), 
+     main = paste0('Densidad ', colnames(datos)[1]))
+plot(density(datos[, 2], adjust = 1), 
+     main = paste0('Densidad ', colnames(datos)[2]))
+par(mfrow=c(1,1))
