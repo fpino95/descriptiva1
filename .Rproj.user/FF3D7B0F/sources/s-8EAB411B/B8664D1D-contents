@@ -4,7 +4,7 @@
 #' @param titulo_grafico Titulo del grafico principal. Si se deja vacio entonces se asigna "Grafico x vs y". Se ingresa como cadena de caracteres.
 #' @return Graficos y resultados
 #' @export desc_continuos
-#' @import dplyr plotly sarima
+#' @import dplyr plotly
 #' @examples
 #' desc_continuos(data = iris[, c(1,3)], titulo_grafico = 'Sepal vs Petal')
 #' desc_continuos(data = iris[, c(1,3)])

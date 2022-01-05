@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1641409696020.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2925426938",
+    "id" : "F6F95861",
+    "lastKnownWriteTime" : 1641411983,
+    "last_content_update" : 1641411983006,
+    "path" : "~/OneDrive - Grupo-exito.com/pc/Documentos/paquete_descriptiva/descriptiva1/R/desc_categoricos.R",
+    "project_path" : "R/desc_categoricos.R",
+    "properties" : {
+        "cursorPosition" : "10,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,7 +1,7 @@
 Package: descriptiva1
 Type: Package
 Title: Analisis descriptivo para distintos tipos de datos
-Version: 1.1
+Version: 1.2
 Author: Fabian Pino 
 Maintainer: Fabian Pino <fpino@grupo-exito.com>
 Description: Este paquete permite realizar el analisis descriptivo a una serie de tiempo y a un dataframe con un par de variables continuas (x vs y). Para la serie de tiempo se muestra:

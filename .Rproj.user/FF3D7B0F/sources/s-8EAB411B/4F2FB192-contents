@@ -155,3 +155,79 @@ plot(density(datos[, 1], adjust = 1),
 plot(density(datos[, 2], adjust = 1), 
      main = paste0('Densidad ', colnames(datos)[2]))
 par(mfrow=c(1,1))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# para datos categoricos (n variables categoricas en dataframe)
+
+datos <- CO2[, 2:3]
+datos <- cars
+datos <- mtcars[, c(2, 8:11)]
+i <- 1
+# aca comienza la funcion
+datos <- data
+for (i in 1:ncol(datos)) {
+  columna_i <- as.character(datos[, i])
+  
+  # agregar las categorias y ordenarlas por conteo
+  datos_i <- data.frame(columna_i, conteo = 1)
+  datos_i_back <- datos_i
+  
+  datos_i <- datos_i %>% group_by(columna_i) %>% 
+    summarise(conteo = sum(conteo, na.rm = T)) %>% 
+    arrange(conteo)
+  datos_i <- as.data.frame(datos_i)
+  
+  colnames(datos_i) <- c(colnames(datos)[i], "conteo")
+  #colnames(datos_i_back) <- c(colnames(datos)[i], "conteo")
+  
+  datos_i$Proporcion <- round(100*datos_i$conteo/sum(datos_i$conteo), digits = 2)
+  
+  # si tiene mas de 10 categorias, hacer grafico de barras, si tiene menos
+  # de 10, hacer grafico de torta
+  if(nrow(datos_i) <= 10){
+    fig <- plot_ly(labels = datos_i_back[,1], values = datos_i_back[,2], type = 'pie')
+    fig <- fig %>% layout(title = paste0(colnames(datos)[i]),
+                          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+                          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+    
+    print(fig)
+  }
+  
+  # si tiene mas de 20 categorias, hacer grafico de barras
+  if(nrow(datos_i) > 10){
+    fig <- plot_ly(
+      x = datos_i[, 1],
+      y = datos_i[, 3],
+      color = datos_i[, 1],
+      type = "bar"
+    )
+    fig <- fig %>% layout(title = paste0(colnames(datos)[i]),
+                          xaxis = list(title = 'Categorias',
+                                       categoryorder = "total descending"),
+                          yaxis = list(title = 'Proporcion'))
+    
+    print(fig)
+  }
+  
+  
+}
+
+print('Termina satisfactoriamente, graficos en Viewer')
